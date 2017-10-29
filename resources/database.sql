@@ -10,7 +10,8 @@ CREATE TABLE product (
   description TEXT,
 
   -- price per unit (max value 100000,99)
-  price NUMERIC(8,2)
+  price NUMERIC(8,2),
+  rating NUMERIC(1)
 );
 
 CREATE TABLE product_category (
