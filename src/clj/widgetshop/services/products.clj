@@ -16,6 +16,15 @@
 (defn fetch-product-categories [db]
   (jdbc/query db ["SELECT c.id, c.name, c.description FROM category c"]))
 
+(defn fetch-ratings-for-product [db product]
+  (jdbc/query db [(str "SELECT r.rating,r.comments"
+                       "  FROM rating r"
+                       " WHERE r.product_id = ?")
+                  product]))
+
+(defn insert-product-rating! [db product rating comments]
+  (jdbc/insert! db :rating {:rating rating :comments comments :product product}))
+
 (defrecord ProductsService []
   component/Lifecycle
   (start [{:keys [db http] :as this}]
@@ -27,7 +36,12 @@
                             (fetch-product-categories db)))
                       (GET "/products/:category" [category]
                            (transit-response
-                            (fetch-products-for-category db (Long/parseLong category))))))))
+                            (fetch-products-for-category db (Long/parseLong category))))
+                      (GET "/ratings/:product" [product]
+                        (transit-response
+                          (fetch-ratings-for-product db (Long/parseLong product))))
+                      (POST "/ratings/:product" [product]
+                        (insert-product-rating! db product 3 "Keskinkertainen"))))))
   (stop [{stop ::routes :as this}]
     (stop)
     (dissoc this ::routes)))

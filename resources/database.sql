@@ -10,13 +10,18 @@ CREATE TABLE product (
   description TEXT,
 
   -- price per unit (max value 100000,99)
-  price NUMERIC(8,2),
-  rating NUMERIC(1)
+  price NUMERIC(8,2)
 );
 
 CREATE TABLE product_category (
   product_id INTEGER NOT NULL REFERENCES product (id),
   category_id INTEGER NOT NULL REFERENCES category (id)
+);
+
+CREATE TABLE rating (
+  product_id INTEGER NOT NULL REFERENCES product (id),
+  rating NUMERIC(1),
+  comment TEXT
 );
 
 -- insert some test data

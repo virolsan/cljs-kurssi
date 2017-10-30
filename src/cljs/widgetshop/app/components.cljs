@@ -31,7 +31,8 @@
        [ui/card-title (:name product)]
        [ui/card-text (:description product)]
        [ui/card-text (str "Price " (:price product) "€")]
-       [ui/card-text (str "Rating " (:rating product) " stars")]
+       [ui/card-text (str "Rating ")
+        (for [rating (range (:rating product))] [ic/toggle-star])]
        [ui/slider {:step 1 :min 0 :max 5 :on-change (fn [event value] (update-rating! product value app))}]
        [ui/card-actions
         [ui/flat-button {:on-click #(select-product! nil app)} "Sulje"]]])))
