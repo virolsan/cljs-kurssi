@@ -40,8 +40,8 @@
                       (GET "/ratings/:product" [product]
                         (transit-response
                           (fetch-ratings-for-product db (Long/parseLong product))))
-                      (POST "/ratings/:product" [product]
-                        (insert-product-rating! db product 3 "Keskinkertainen"))))))
+                      (POST "/ratings/:product" [product rating]
+                        (insert-product-rating! db product rating "Keskinkertainen"))))))
   (stop [{stop ::routes :as this}]
     (stop)
     (dissoc this ::routes)))

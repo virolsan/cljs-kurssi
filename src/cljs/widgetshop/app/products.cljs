@@ -15,3 +15,6 @@
 
 (defn load-product-categories! []
   (server/get! "/categories" {:on-success #(set-state! [:categories] %)}))
+
+(defn add-rating! [product rating]
+  (println (str "Adding rating " rating " for product " product)))
