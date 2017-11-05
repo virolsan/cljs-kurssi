@@ -17,4 +17,7 @@
   (server/get! "/categories" {:on-success #(set-state! [:categories] %)}))
 
 (defn add-rating! [product rating]
-  (println (str "Adding rating " rating " for product " product)))
+  (println (str "Adding rating " rating " for product " product))
+  (let [product-with-rating (update product :ratings conj rating)]
+    (println "product-with-rating " product-with-rating)
+    (update-state! (fn [app product] (assoc app :selected-product product-with-rating)))))

@@ -17,10 +17,18 @@
 
 (defn update-rating [app rating]
   (println "update-rating" rating)
-  (update app :rating rating))
+  (assoc app :rating rating))
 
 (defn add-rating! [product app]
-  (products/add-rating! product (:rating app))) ;; TODO average rating on product
+  (products/add-rating! product (:rating app))
+  (state/update-state! update-rating {})) ;; TODO average rating on product
+
+(defn average-rating [product]
+  (let [ratings (:ratings product)
+        rating-count (count ratings)
+        rating-sum (apply + (map :rating ratings))]
+    (println "Average of " ratings " = " rating-sum "/" rating-count)
+    (/ rating-sum rating-count)))
 
 (defn product-view [app]
   (let [product (:selected-product app)
@@ -31,7 +39,7 @@
        [ui/card-text (:description product)]
        [ui/card-text (str "Price " (:price product) "€")]
        [ui/card-text (str "Rating ")
-        (for [star (range (:rating product))]
+        (for [star (range (average-rating product))]
           ^{:key star} [ic/toggle-star])]
 
        [ui/divider]
@@ -40,7 +48,7 @@
                    :on-change (fn [event value]
                                 (state/update-state! update-rating (assoc-in rating-form [:rating] value)))}]
        [ui/card-text "Comments: "
-        [ui/text-field {:id "comment" :label "Comments" :defaultValue (:comment rating-form)
+        [ui/text-field {:id "comment" :label "Comments"
                         :on-change (fn [event value]
                                      (state/update-state! update-rating (assoc-in rating-form [:comment] value)))}]]
        [ui/card-actions
