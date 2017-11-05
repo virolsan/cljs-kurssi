@@ -7,15 +7,15 @@
             [cljs-react-material-ui.reagent :as ui]
             [cljs-react-material-ui.icons :as ic]))
 
-(defn add-to-cart [product app]
+(defn add-to-cart [app product]
   (println "add-to-cart" product)
   (update app :cart product))
 
-(defn select-product [product app]
+(defn select-product [app product]
   (println "select-product" product)
   (assoc app :selected-product product))
 
-(defn update-rating [rating app]
+(defn update-rating [app rating]
   (println "update-rating" rating)
   (update app :rating rating))
 
@@ -64,7 +64,7 @@
         (for [{:keys [id name description price rating] :as product} products]
           ^{:key id}
           [ui/table-row
-           [ui/table-row-column [:a {:on-click #(state/update-state! select-product! product)} name]]
+           [ui/table-row-column [:a {:on-click #(state/update-state! select-product product)} name]]
            [ui/table-row-column description]
            [ui/table-row-column price]
            [ui/table-row-column rating]

@@ -5,7 +5,7 @@
             [cljs-react-material-ui.core :refer [get-mui-theme color]]
             [cljs-react-material-ui.reagent :as ui]
             [cljs-react-material-ui.icons :as ic]
-            [widgetshop.app.state :refer [app]]
+            [widgetshop.app.state :as state :refer [app]]
             [widgetshop.app.products :as products]
             [widgetshop.app.components :as components]))
 
@@ -41,7 +41,7 @@
                          :value               (:id (:category app))
                          :on-change           (fn [evt idx value]
                                                 ((products/select-category-by-id! value)
-                                                  (components/select-product! nil app)))}
+                                                  (state/update-state! components/select-product nil)))}
         (for [{:keys [id name] :as category} (:categories app)]
           ^{:key id}
           [ui/menu-item {:value id :primary-text name}])])
