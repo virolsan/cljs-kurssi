@@ -9,7 +9,7 @@
 
 (defn add-to-cart [app product]
   (println "add-to-cart" product)
-  (update app :cart product))
+  (update app :cart conj product))
 
 (defn select-product [app product]
   (println "select-product" product)
