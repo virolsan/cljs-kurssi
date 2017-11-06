@@ -44,7 +44,7 @@
      ;; Product listing for the selected category
      (components/products-table app)
 
-     (components/product-view app)
+     (components/product-view (:selected-product app) (:rating app))
 
      [ui/raised-button {:label        "Click me"
                         :icon         (ic/social-group)

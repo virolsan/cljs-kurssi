@@ -7,7 +7,7 @@
             [cljs-react-material-ui.reagent :as ui]
             [cljs-react-material-ui.icons :as ic]))
 
-(defn add-to-cart [app product]
+(defn- add-to-cart [app product]
   (println "add-to-cart" product)
   (update app :cart conj product))
 
@@ -19,8 +19,8 @@
   (println "update-rating" rating)
   (assoc app :rating rating))
 
-(defn add-rating! [product app]
-  (products/add-rating! product (:rating app))
+(defn add-rating [app product rating]
+  (products/add-rating! product rating)
   (state/update-state! update-rating {})) ;; TODO average rating on product
 
 (defn average-rating [product]
@@ -30,30 +30,26 @@
     (println "Average of " ratings " = " rating-sum "/" rating-count)
     (/ rating-sum rating-count)))
 
-(defn product-view [app]
-  (let [product (:selected-product app)
-        rating-form (:rating app)]
-    (if (not (nil? product))
-      [ui/card
-       [ui/card-title (:name product)]
-       [ui/card-text (:description product)]
-       [ui/card-text (str "Price " (:price product) "€")]
-       [ui/card-text (str "Rating ")
-        (for [star (range (average-rating product))]
-          ^{:key star} [ic/toggle-star])]
+(defn product-view [{:keys [id name description price] :as product} rating-form]
+  (when product
+    [ui/card
+     [ui/card-title name]
+     [ui/card-text description]
+     [ui/card-text (str "Price " price "€")]
+     [ui/card-text (str "Rating ")
+      (for [star (range (average-rating product))]
+        ^{:key star} [ic/toggle-star])]
 
-       [ui/divider]
-
-       [ui/slider {:step 1 :min 0 :max 5
-                   :on-change (fn [event value]
-                                (state/update-state! update-rating (assoc-in rating-form [:rating] value)))}]
-       [ui/card-text "Comments: "
-        [ui/text-field {:id "comment" :label "Comments"
-                        :on-change (fn [event value]
-                                     (state/update-state! update-rating (assoc-in rating-form [:comment] value)))}]]
-       [ui/card-actions
-        [ui/flat-button {:on-click #(add-rating! product app)} "Rate!"]
-        [ui/flat-button {:on-click #(state/update-state! select-product nil)} "Close"]]])))
+     [ui/slider {:step 1 :min 0 :max 5
+                 :on-change (fn [event value]
+                              (state/update-state! update-rating (assoc-in rating-form [:rating] value)))}]
+     [ui/card-text "Comments: "
+      [ui/text-field {:id "comment" :label "Comments"
+                      :on-change (fn [event value]
+                                   (state/update-state! update-rating (assoc-in rating-form [:comment] value)))}]]
+     [ui/card-actions
+      [ui/flat-button {:on-click #(state/update-state! add-rating product rating-form)} "Rate!"]
+      [ui/flat-button {:on-click #(state/update-state! select-product nil)} "Close"]]]))
 
 (defn products-table [app]
   (let [products ((:products-by-category app) (:category app))]
