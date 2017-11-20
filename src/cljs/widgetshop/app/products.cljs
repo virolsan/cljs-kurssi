@@ -17,9 +17,11 @@
 (defn load-product-categories! []
   (server/get! "/categories" {:on-success #(set-state! [:categories] %)}))
 
+(defn fetch-ratings-for-product! [product-id]
+  (server/get! (str "/ratings/" product-id) {}))
+
 (defn add-rating! [product rating]
-  (println (str "Adding rating " rating " for product " product))
   (server/post! "/ratings/"
                 {:params {:id (:id product) :my-review rating}
-                 :on-success #(println "Success")
+                 :on-success #(set-state! [:product-ratings] %)
                  :on-failure #(println "Failure")}))

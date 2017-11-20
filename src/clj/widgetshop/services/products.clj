@@ -33,12 +33,12 @@
 
 (defn save-rating-for-product! [db product-id rating]
   (jdbc/with-db-transaction [db db]
-                            (jdbc/insert!
-                              db
-                              "product_rating"
-                              {:product_id product-id
-                               :rating rating})
-                            (fetch-ratings-for-product db product-id)))
+    (jdbc/insert!
+      db
+      "product_rating"
+      {:product_id product-id
+       :rating rating})
+    (fetch-ratings-for-product db product-id)))
 
   (defrecord ProductsService []
     component/Lifecycle
@@ -62,7 +62,6 @@
                                       (-> body
                                           (transit/reader :json)
                                           (transit/read))]
-                                  (println "Posting form " params)
                                   (transit-response
                                     (save-rating-for-product! db id rating))))))))
 
