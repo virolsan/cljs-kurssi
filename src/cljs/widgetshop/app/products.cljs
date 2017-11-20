@@ -1,7 +1,8 @@
 (ns widgetshop.app.products
   "Controls product listing information."
   (:require [widgetshop.app.state :refer [update-state! set-state!]]
-            [widgetshop.server :as server]))
+            [widgetshop.server :as server]
+            [cognitect.transit :as transit]))
 
 (defn select-category-by-id! [category-id]
   (update-state!
@@ -18,6 +19,7 @@
 
 (defn add-rating! [product rating]
   (println (str "Adding rating " rating " for product " product))
-  (let [product-with-rating (update product :ratings conj rating)]
-    (println "product-with-rating " product-with-rating)
-    (update-state! (fn [app product] (assoc app :selected-product product-with-rating)))))
+  (server/post! "/ratings/"
+                {:params {:id (:id product) :my-review rating}
+                 :on-success #(println "Success")
+                 :on-failure #(println "Failure")}))

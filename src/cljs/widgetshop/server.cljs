@@ -8,3 +8,8 @@
                  :error-handler on-failure
                  :response-format :transit}))
 
+(defn post! [url {:keys [params on-success on-failure]}]
+  (ajax/POST url {:params params
+                  :handler on-success
+                  :error-handler on-failure
+                  :response-format :transit}))

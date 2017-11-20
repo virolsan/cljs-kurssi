@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+-- noinspection SqlDialectInspectionForFile
 CREATE TABLE category (
   id SERIAL PRIMARY KEY,
   name VARCHAR (100) NOT NULL,
@@ -18,10 +20,10 @@ CREATE TABLE product_category (
   category_id INTEGER NOT NULL REFERENCES category (id)
 );
 
-CREATE TABLE rating (
-  product_id INTEGER NOT NULL REFERENCES product (id),
-  rating NUMERIC(1),
-  comment TEXT
+CREATE TABLE product_rating(
+  product_id INTEGER NOT NULL REFERENCES product(id),
+  rating NUMERIC (2,1) NOT NULL check (rating BETWEEN 1 AND 5),
+  review TEXT
 );
 
 -- insert some test data
@@ -39,3 +41,21 @@ VALUES ('Illudium Q-36 Explosive Space Modulator', 'Pesky planets obstructing yo
 
 INSERT INTO product_category (product_id, category_id)
 VALUES (1, 3), (2, 1), (3, 1), (4, 2);
+
+INSERT INTO product_rating(product_id, rating)
+VALUES (1, 3.5),
+       (1, 2),
+       (1, 4.5),
+       (1, 5),
+       (1, 2),
+       (2, 1.5),
+       (2, 1),
+       (2, 2.5),
+       (2, 1),
+       (3, 1),
+       (3, 5),
+       (3, 4.5),
+       (3, 5),
+       (3, 4.5),
+       (4, 2.5),
+       (4, 4);
